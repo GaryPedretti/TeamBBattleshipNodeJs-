@@ -45,19 +45,18 @@ class Battleship {
         console.log("  |     /_\\'");
         console.log("   \\    \\_/");
         console.log("    \"\"\"\"");
-
+    
         do {
             console.log();
             console.log("Player, it's your turn");
-            console.log("Enter coordinates for your shot :");
-            var position = Battleship.ParsePosition(readline.question());
-            var isHit = gameController.CheckIsHit(this.enemyFleet, position);
-
-            telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: isHit}});
-
-            if (isHit) {
+            console.log("Enter coordinates for your shot:");
+            const playerShot = Battleship.ParsePosition(readline.question());
+            const playerResult = gameController.CheckIsHit(this.enemyFleet, playerShot);
+    
+            telemetryWorker.postMessage({ eventName: 'Player_ShootPosition', properties: { Position: playerShot.toString(), IsHit: playerResult.isShotOnTarget } });
+    
+            if (playerResult.isShotOnTarget && playerResult.isNewHit) {
                 beep();
-
                 console.log("                \\         .  ./");
                 console.log("              \\      .:\";'.:..\"   /");
                 console.log("                  (M^^.^~~:.'\").");
@@ -66,20 +65,33 @@ class Battleship {
                 console.log("            -   (\\- |  \\ /  |  /)  -");
                 console.log("                 -\\  \\     /  /-");
                 console.log("                   \\  \\   /  /");
+                console.log("Yeah! Nice hit!");
+    
+                // Check if any ship is sunk
+                this.enemyFleet.forEach(ship => {
+                    if (ship.isSunk()) {
+                        console.log(cliColor.redBright(`You sank the enemy's ${ship.name}!`));
+                    }
+                });
+            } else if (playerResult.isShotOnTarget && !playerResult.isNewHit){
+                beep();
+                console.log("You have already shot this position!")
+            } else {
+                console.log("Miss");
             }
-
-            console.log(isHit ? "Yeah ! Nice hit !" : "Miss");
-
-            var computerPos = this.GetRandomPosition();
-            var isHit = gameController.CheckIsHit(this.myFleet, computerPos);
-
-            telemetryWorker.postMessage({eventName: 'Computer_ShootPosition', properties:  {Position: computerPos.toString(), IsHit: isHit}});
-
+    
             console.log();
-            console.log(`Computer shot in ${computerPos.column}${computerPos.row} and ` + (isHit ? `has hit your ship !` : `miss`));
-            if (isHit) {
+    
+            console.log("Computer's turn...");
+            const computerShot = this.GetRandomPosition();
+            const computerResult = gameController.CheckIsHit(this.myFleet, computerShot);
+    
+            telemetryWorker.postMessage({ eventName: 'Computer_ShootPosition', properties: { Position: computerShot.toString(), IsHit: computerResult.isShotOnTarget } });
+    
+            console.log(`Computer shot at ${computerShot.column}${computerShot.row} and ` + (computerResult.isShotOnTarget ? "hit your ship!" : "missed."));
+    
+            if (computerResult.isShotOnTarget) {
                 beep();
-
                 console.log("                \\         .  ./");
                 console.log("              \\      .:\";'.:..\"   /");
                 console.log("                  (M^^.^~~:.'\").");
@@ -88,10 +100,17 @@ class Battleship {
                 console.log("            -   (\\- |  \\ /  |  /)  -");
                 console.log("                 -\\  \\     /  /-");
                 console.log("                   \\  \\   /  /");
+    
+                // Check if any ship is sunk
+                this.myFleet.forEach(ship => {
+                    if (ship.isSunk()) {
+                        console.log(cliColor.redBright(`The computer sank your ${ship.name}!`));
+                    }
+                });
             }
-        }
-        while (true);
+        } while (true);
     }
+    
 
     static ParsePosition(input) {
         var letter = letters.get(input.toUpperCase().substring(0, 1));
@@ -110,7 +129,8 @@ class Battleship {
     }
 
     InitializeGame() {
-        this.InitializeMyFleet();
+        // this.InitializeMyFleet();
+        this.InitializeMyFleetEmpty();
         this.InitializeEnemyFleet();
     }
 
@@ -130,6 +150,12 @@ class Battleship {
             }
         })
     }
+
+    InitializeMyFleetEmpty() {
+        this.myFleet = gameController.InitializeShips();
+        const usedPositions = new Set();
+    }
+    
 
     InitializeEnemyFleet() {
         this.enemyFleet = gameController.InitializeShips();

@@ -13,19 +13,35 @@ class GameController {
     }
 
     static CheckIsHit(ships, shot) {
-        if (shot == undefined)
-            throw "The shooting position is not defined";
-        if (ships == undefined)
-            throw "No ships defined";
-        var returnvalue = false;
+        if (shot === undefined) {
+            throw new Error("The shooting position is not defined");
+        }
+        if (ships === undefined || !Array.isArray(ships) || ships.length === 0) {
+            throw new Error("No ships defined");
+        }
+    
+        let isShotOnTarget = false;
+        let isNewHit = false;
+    
+        // Iterate through all ships to check the shot
         ships.forEach(function (ship) {
-            ship.positions.forEach(position => {
-                if (position.row == shot.row && position.column == shot.column)
-                    returnvalue = true;
-            });
+            const hitResult = ship.checkHit(shot);
+            if (hitResult.isOnTarget) {
+                isShotOnTarget = true;
+                if (hitResult.isNewHit) {
+                    isNewHit = true;
+    
+                    // Check if the ship is now sunk
+                    if (ship.isSunk()) {
+                        console.log(`Ship sunk: ${ship.name}`);
+                    }
+                }
+            }
         });
-        return returnvalue;
+    
+        return { isShotOnTarget, isNewHit };
     }
+    
 
     static isShipValid(ship) {
         return ship.positions.length == ship.size;
