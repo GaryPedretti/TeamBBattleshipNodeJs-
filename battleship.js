@@ -77,10 +77,8 @@ class Battleship {
             } else if (playerResult.isShotOnTarget && !playerResult.isNewHit){
                 console.log(cliColor.red("You have already shot this position!"))
             } else {
-                console.log(cliColor.red("Miss"));
+                Battleship.DisplayPlayerShotResult(playerResult.isShotOnTarget);
             }
-
-            Battleship.DisplayPlayerShotResult(playerResult.isShotOnTarget);
 
             var computerPos = this.GetRandomPosition();
             var computerResult = gameController.CheckIsHit(this.myFleet, computerPos);
