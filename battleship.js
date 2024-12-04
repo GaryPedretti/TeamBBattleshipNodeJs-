@@ -54,7 +54,7 @@ class Battleship {
             var position = Battleship.ParsePosition(readline.question());
             const playerResult = gameController.CheckIsHit(this.enemyFleet, position);
 
-            telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: isHit}});
+            telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: playerResult.isShotOnTarget}});
 
             if (playerResult.isShotOnTarget && playerResult.isNewHit) {
                 beep();
@@ -80,16 +80,16 @@ class Battleship {
                 console.log(cliColor.red("Miss"));
             }
 
-            Battleship.DisplayPlayerShotResult(isHit);
+            Battleship.DisplayPlayerShotResult(playerResult.isShotOnTarget);
 
             var computerPos = this.GetRandomPosition();
-            var isHit = gameController.CheckIsHit(this.myFleet, computerPos);
+            var computerResult = gameController.CheckIsHit(this.myFleet, computerPos);
 
-            telemetryWorker.postMessage({eventName: 'Computer_ShootPosition', properties:  {Position: computerPos.toString(), IsHit: isHit}});
+            telemetryWorker.postMessage({eventName: 'Computer_ShootPosition', properties:  {Position: computerPos.toString(), IsHit: computerResult.isShotOnTarget}});
 
             console.log();
-            Battleship.DisplayComputerShotResult(isHit, computerPos)
-            if (isHit) {
+            Battleship.DisplayComputerShotResult(computerResult.isShotOnTarget, computerPos)
+            if (computerResult.isShotOnTarget) {
                 beep();
 
                 console.log(cliColor.red("                \\         .  ./"));
