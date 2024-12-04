@@ -3,10 +3,10 @@ class GameController {
         var colors = require("cli-color");
         const Ship = require("./ship.js");
         var ships = [
-            new Ship("Aircraft Carrier", 5, colors.CadetBlue),
-            new Ship("Battleship", 4, colors.Red),
-            new Ship("Submarine", 3, colors.Chartreuse),
-            new Ship("Destroyer", 3, colors.Yellow),
+            // new Ship("Aircraft Carrier", 5, colors.CadetBlue),
+            // new Ship("Battleship", 4, colors.Red),
+            // new Ship("Submarine", 3, colors.Chartreuse),
+            // new Ship("Destroyer", 3, colors.Yellow),
             new Ship("Patrol Boat", 2, colors.Orange)
         ];
         return ships;
@@ -45,6 +45,18 @@ class GameController {
 
     static isShipValid(ship) {
         return ship.positions.length == ship.size;
+    }
+
+    static checkIsGameOver(ships) {
+
+        let rtn = true;
+
+        ships.forEach(function (ship) {
+            if(!ship.isSunk()) { rtn = false;}
+        });
+
+        return rtn;
+
     }
 }
 

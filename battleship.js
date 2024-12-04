@@ -9,9 +9,9 @@ let telemetryWorker;
 
 class Battleship {
     start() {
-        telemetryWorker = new Worker("./TelemetryClient/telemetryClient.js");   
-
-        Battleship.DisplayGeneralMessage("Starting...");
+        telemetryWorker = new Worker("./TelemetryClient/telemetryClient.js");
+        console.clear();
+        console.log("Starting new game...");
         telemetryWorker.postMessage({eventName: 'ApplicationStarted', properties:  {Technology: 'Node.js'}});
 
         console.log(cliColor.magenta("                                     |__"));
@@ -30,7 +30,32 @@ class Battleship {
         console.log();
 
         this.InitializeGame();
-        this.StartGame();
+
+        let gameWinner = this.StartGame();
+
+        if(gameWinner == "player") {
+            console.clear();
+            console.log("You win!!!");
+        }
+
+        if(gameWinner == "computer")
+        {
+            console.clear();
+            console.log("Sorry, you lose.");
+        }
+
+        var restart = '';
+        do
+        {
+            console.log("Would you like to play again? Y/N");
+            restart = readline.question();
+            restart = restart.toUpperCase();
+        } while (restart != "Y" && restart != "YES" && restart != "N" && restart != "NO")
+
+        let rtn = false;
+        if (restart == "Y" || restart == "YES") rtn = true;
+        return rtn;
+        
     }
 
     StartGame() {
@@ -46,6 +71,8 @@ class Battleship {
         console.log(cliColor.magenta("  |     /_\\'"));
         console.log(cliColor.magenta("   \\    \\_/"));
         console.log(cliColor.magenta("    \"\"\"\""));
+
+        let gameOver = false;
 
         do {
             console.log();
@@ -80,6 +107,9 @@ class Battleship {
                 Battleship.DisplayPlayerShotResult(playerResult.isShotOnTarget);
             }
 
+            gameOver = gameController.checkIsGameOver(this.enemyFleet);
+            if(gameOver) return "player";
+
             var computerPos = this.GetRandomPosition();
             var computerResult = gameController.CheckIsHit(this.myFleet, computerPos);
 
@@ -106,7 +136,12 @@ class Battleship {
                     }
                 });
             }
-        } while (true);
+
+            gameOver = gameController.checkIsGameOver(this.enemyFleet);
+            if(gameOver) return "computer";
+
+        }
+        while (!gameOver);
     }
     
 
@@ -158,27 +193,31 @@ class Battleship {
     InitializeEnemyFleet() {
         this.enemyFleet = gameController.InitializeShips();
 
-        this.enemyFleet[0].addPosition(new position(letters.B, 4));
-        this.enemyFleet[0].addPosition(new position(letters.B, 5));
-        this.enemyFleet[0].addPosition(new position(letters.B, 6));
-        this.enemyFleet[0].addPosition(new position(letters.B, 7));
-        this.enemyFleet[0].addPosition(new position(letters.B, 8));
+        // this.enemyFleet[0].addPosition(new position(letters.A, 1));
+        // this.enemyFleet[0].addPosition(new position(letters.A, 2));
+        // this.enemyFleet[0].addPosition(new position(letters.A, 3));
+        // this.enemyFleet[0].addPosition(new position(letters.A, 4));
+        // this.enemyFleet[0].addPosition(new position(letters.A, 5));
 
-        this.enemyFleet[1].addPosition(new position(letters.E, 6));
-        this.enemyFleet[1].addPosition(new position(letters.E, 7));
-        this.enemyFleet[1].addPosition(new position(letters.E, 8));
-        this.enemyFleet[1].addPosition(new position(letters.E, 9));
+        // this.enemyFleet[1].addPosition(new position(letters.B, 1));
+        // this.enemyFleet[1].addPosition(new position(letters.B, 2));
+        // this.enemyFleet[1].addPosition(new position(letters.B, 3));
+        // this.enemyFleet[1].addPosition(new position(letters.B, 4));
 
-        this.enemyFleet[2].addPosition(new position(letters.A, 3));
-        this.enemyFleet[2].addPosition(new position(letters.B, 3));
-        this.enemyFleet[2].addPosition(new position(letters.C, 3));
+        // this.enemyFleet[2].addPosition(new position(letters.C, 1));
+        // this.enemyFleet[2].addPosition(new position(letters.C, 2));
+        // this.enemyFleet[2].addPosition(new position(letters.C, 3));
 
-        this.enemyFleet[3].addPosition(new position(letters.F, 8));
-        this.enemyFleet[3].addPosition(new position(letters.G, 8));
-        this.enemyFleet[3].addPosition(new position(letters.H, 8));
+        // this.enemyFleet[3].addPosition(new position(letters.D, 1));
+        // this.enemyFleet[3].addPosition(new position(letters.D, 2));
+        // this.enemyFleet[3].addPosition(new position(letters.D, 3));
 
-        this.enemyFleet[4].addPosition(new position(letters.C, 5));
-        this.enemyFleet[4].addPosition(new position(letters.C, 6));
+        // this.enemyFleet[4].addPosition(new position(letters.E, 1));
+        // this.enemyFleet[4].addPosition(new position(letters.E, 2));
+
+        // delete
+        this.enemyFleet[0].addPosition(new position(letters.E, 1));
+        this.enemyFleet[0].addPosition(new position(letters.E, 2));
     }
 
     static DisplayGeneralMessage(text){

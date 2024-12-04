@@ -1,3 +1,7 @@
 const battleship = require("./battleship.js");
 
-new battleship().start();
+let keepPlaying = new battleship().start();
+
+while(keepPlaying) {
+    let keepPlaying = new battleship().start();
+}
