@@ -21,7 +21,10 @@ class GameController {
         ships.forEach(function (ship) {
             ship.positions.forEach(position => {
                 if (position.row == shot.row && position.column == shot.column)
+                {
+                    position.isHit = true;
                     returnvalue = true;
+                }
             });
         });
         return returnvalue;
@@ -29,6 +32,18 @@ class GameController {
 
     static isShipValid(ship) {
         return ship.positions.length == ship.size;
+    }
+
+    static checkIsGameOver(ships) {
+
+        let rtn = true;
+
+        ships.forEach(function (ship) {
+            if(!ship.isSunk()) { rtn = false;}
+        });
+
+        return rtn;
+
     }
 }
 
