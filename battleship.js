@@ -75,6 +75,19 @@ class Battleship {
         do {
             console.log();
             Battleship.DisplayGeneralMessage("Player, it's your turn");
+
+            let sunkShips = [];
+            this.enemyFleet.forEach(ship => {
+                if (ship.isSunk()) {
+                    sunkShips.push(ship.name);
+                }
+            });
+            if (sunkShips.length > 0) {
+                console.log("Sunken enemy ships: ")
+                console.log(cliColor.redBright(`${sunkShips.join(', ')}`));
+            }
+            
+
             Battleship.DisplayGeneralMessage("Enter coordinates for your shot :");
             var position = Battleship.ParsePosition(readline.question());
             const playerResult = gameController.CheckIsHit(this.enemyFleet, position);
@@ -123,12 +136,12 @@ class Battleship {
                 console.log(cliColor.red("                 -\\  \\     /  /-"));
                 console.log(cliColor.red("                   \\  \\   /  /"));
 
-                // Check if any ship is sunk
-                this.myFleet.forEach(ship => {
-                    if (ship.isSunk()) {
-                        console.log(cliColor.redBright(`The computer sank your ${ship.name}!`));
-                    }
-                });
+                // // Check if any ship is sunk
+                // this.myFleet.forEach(ship => {
+                //     if (ship.isSunk()) {
+                //         console.log(cliColor.redBright(`The computer sank your ${ship.name}!`));
+                //     }
+                // });
             }
 
             gameOver = gameController.checkIsGameOver(this.enemyFleet);
@@ -146,8 +159,8 @@ class Battleship {
     }
 
     GetRandomPosition() {
-        var rows = 8;
-        var lines = 8;
+        var rows = 4;
+        var lines = 1;
         var rndColumn = Math.floor((Math.random() * lines));
         var letter = letters.get(rndColumn + 1);
         var number = Math.floor((Math.random() * rows));
