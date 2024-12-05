@@ -15,7 +15,7 @@ describe('checkIsHitTests', function () {
       }
       counter++;
     });
-    var result = gameController.CheckIsHit(ships, new position(letters.B, 3));
+    var result = gameController.CheckIsHit(ships, new position(letters.A, 1));
     assert.strictEqual(result.isShotOnTarget, true, "shot was not on target");
     assert.strictEqual(result.isNewHit, true, "shot was not a new hit");
   });
@@ -65,17 +65,17 @@ describe('checkIsHitTests', function () {
     });
 
     // First hit
-    var firstResult = gameController.CheckIsHit(ships, new position(letters.B, 3));
+    var firstResult = gameController.CheckIsHit(ships, new position(letters.A, 1));
     assert.strictEqual(firstResult.isShotOnTarget, true, "First hit was not on target");
     assert.strictEqual(firstResult.isNewHit, true, "First hit was not a new hit");
 
     // Second hit at the same position
-    var secondResult = gameController.CheckIsHit(ships, new position(letters.B, 3));
+    var secondResult = gameController.CheckIsHit(ships, new position(letters.A, 1));
     assert.strictEqual(secondResult.isShotOnTarget, true, "Second hit was not on target");
     assert.strictEqual(secondResult.isNewHit, false, "Second hit was incorrectly marked as new");
 
     // Third hit at the same position
-    var thirdResult = gameController.CheckIsHit(ships, new position(letters.B, 3));
+    var thirdResult = gameController.CheckIsHit(ships, new position(letters.A, 1));
     assert.strictEqual(thirdResult.isShotOnTarget, true, "Third hit was not on target");
     assert.strictEqual(thirdResult.isNewHit, false, "Third hit was incorrectly marked as new");
   });

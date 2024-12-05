@@ -59,8 +59,6 @@ class Battleship {
     }
 
     StartGame() {
-        console.clear();
-
         console.log(cliColor.magenta("                  __"));
         console.log(cliColor.magenta("                 /  \\"));
         console.log(cliColor.magenta("           .-.  |    |"));
@@ -95,12 +93,8 @@ class Battleship {
                 console.log(cliColor.yellow("                 -\\  \\     /  /-"));
                 console.log(cliColor.yellow("                   \\  \\   /  /"));
 
-                // Check if any ship is sunk
-                this.enemyFleet.forEach(ship => {
-                    if (ship.isSunk()) {
-                        console.log(cliColor.redBright(`You sank the enemy's ${ship.name}!`));
-                    }
-                });
+                Battleship.DisplayPlayerShotResult(playerResult.isShotOnTarget);
+                
             } else if (playerResult.isShotOnTarget && !playerResult.isNewHit){
                 console.log(cliColor.red("You have already shot this position!"))
             } else {
@@ -163,7 +157,7 @@ class Battleship {
 
     InitializeGame() {
         // this.InitializeMyFleet();
-        this.InitializeMyFleetEmpty();
+        this.InitializeMyFleetStatic();
         this.InitializeEnemyFleet();
     }
 
@@ -184,9 +178,14 @@ class Battleship {
         })
     }
 
-    InitializeMyFleetEmpty() {
+    InitializeMyFleetStatic() {
         this.myFleet = gameController.InitializeShips();
-        const usedPositions = new Set();
+        this.myFleet[0].addPosition(new position(letters.A, 1));
+        this.myFleet[0].addPosition(new position(letters.A, 2));
+        this.myFleet[0].addPosition(new position(letters.A, 3));
+
+        this.myFleet[1].addPosition(new position(letters.B, 1));
+        this.myFleet[1].addPosition(new position(letters.B, 2));
     }
     
 
@@ -216,8 +215,15 @@ class Battleship {
         // this.enemyFleet[4].addPosition(new position(letters.E, 2));
 
         // delete
-        this.enemyFleet[0].addPosition(new position(letters.E, 1));
-        this.enemyFleet[0].addPosition(new position(letters.E, 2));
+
+        this.enemyFleet[0].addPosition(new position(letters.D, 1));
+        this.enemyFleet[0].addPosition(new position(letters.D, 2));
+        this.enemyFleet[0].addPosition(new position(letters.D, 3));
+
+        this.enemyFleet[1].addPosition(new position(letters.E, 1));
+        this.enemyFleet[1].addPosition(new position(letters.E, 2));
+
+        
     }
 
     static DisplayGeneralMessage(text){
