@@ -4,6 +4,7 @@ const { CheckFleetSunkenShips } = require("../battleship.js");
 const gameController = require("../GameController/gameController.js");
 const letters = require("../GameController/letters.js");
 const position = require("../GameController/position.js");
+const Battleship = require("../battleship.js"); 
 
 describe('CheckFleetSunkenShipsTests', function () {
 

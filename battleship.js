@@ -9,8 +9,8 @@ let telemetryWorker;
 
 class Battleship {
 
-    BOARD_HEIGHT = [letters.A, letters.B, letters.C, letters.D, letters.E, letters.F, letters.H, letters.I];
-    BOARD_WIDTH = 8;
+   static BOARD_LETTERS = [letters.A, letters.B, letters.C, letters.D, letters.E, letters.F, letters.H, letters.I];
+    static BOARD_WIDTH = 8;
 
     start() {
         telemetryWorker = new Worker("./TelemetryClient/telemetryClient.js");
@@ -80,8 +80,16 @@ class Battleship {
             console.log();
             Battleship.DisplayGeneralMessage("Player, it's your turn");
             Battleship.CheckFleetSunkenShips(this.enemyFleet);
-            Battleship.DisplayGeneralMessage("Enter coordinates for your shot :");
-            var position = Battleship.ParsePosition(readline.question());
+            let position;
+            while (true) {
+                try {
+                    position = Battleship.ParsePosition(readline.question("Enter coordinates for your shot: "));
+                    break; // Exit the loop if parsing is successful
+                } catch (error) {
+                    console.log(cliColor.red(`Error: ${error.message}. Please try again.`));
+                }
+            }
+            
             const playerResult = gameController.CheckIsHit(this.enemyFleet, position);
 
             telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: playerResult.isShotOnTarget}});
@@ -144,11 +152,12 @@ class Battleship {
     }
 
     static ParsePosition(input) {
-        var letter = letters.get(input.toUpperCase().substring(0, 1));
-        var number = parseInt(input.substring(1), 10);
+        const rowInput = input.toUpperCase().substring(0, 1);
+        const letter = letters.get(rowInput);
+        const number = parseInt(input.substring(1), 10);
     
-        if (!this.BOARD_HEIGHT.includes(letter)) {
-            throw new Error(`Invalid position: The row '${input[0]}' is outside the allowed board range.`);
+        if (!letter || !this.BOARD_LETTERS.includes(letter)) {
+            throw new Error(`Invalid position: The row '${rowInput}' is outside the allowed board range.`);
         }
     
         if (isNaN(number) || number < 0 || number >= this.BOARD_WIDTH) {
@@ -157,6 +166,7 @@ class Battleship {
     
         return new position(letter, number);
     }
+    
     
 
     GetRandomPosition() {
