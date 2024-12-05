@@ -8,6 +8,10 @@ const letters = require("./GameController/letters.js");
 let telemetryWorker;
 
 class Battleship {
+
+    BOARD_HEIGHT = [letters.A, letters.B, letters.C, letters.D, letters.E, letters.F, letters.H, letters.I];
+    BOARD_WIDTH = 8;
+
     start() {
         telemetryWorker = new Worker("./TelemetryClient/telemetryClient.js");
         console.clear();
@@ -138,13 +142,22 @@ class Battleship {
         }
         while (!gameOver);
     }
-    
 
     static ParsePosition(input) {
         var letter = letters.get(input.toUpperCase().substring(0, 1));
-        var number = parseInt(input.substring(1, 2), 10);
+        var number = parseInt(input.substring(1), 10);
+    
+        if (!this.BOARD_HEIGHT.includes(letter)) {
+            throw new Error(`Invalid position: The row '${input[0]}' is outside the allowed board range.`);
+        }
+    
+        if (isNaN(number) || number < 0 || number >= this.BOARD_WIDTH) {
+            throw new Error(`Invalid position: The column '${number}' is outside the allowed board range.`);
+        }
+    
         return new position(letter, number);
     }
+    
 
     GetRandomPosition() {
         var rows = 4;
