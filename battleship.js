@@ -170,8 +170,8 @@ class Battleship {
     
 
     GetRandomPosition() {
-        var rows = 4;
-        var lines = 1;
+        var rows = 8;
+        var lines = 8;
         var rndColumn = Math.floor((Math.random() * lines));
         var letter = letters.get(rndColumn + 1);
         var number = Math.floor((Math.random() * rows));
