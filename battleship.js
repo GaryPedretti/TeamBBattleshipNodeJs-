@@ -75,7 +75,7 @@ class Battleship {
         do {
             console.log();
             Battleship.DisplayGeneralMessage("Player, it's your turn");
-            CheckFleetSunkenShips(this.enemyFleet);
+            Battleship.CheckFleetSunkenShips(this.enemyFleet);
             Battleship.DisplayGeneralMessage("Enter coordinates for your shot :");
             var position = Battleship.ParsePosition(readline.question());
             const playerResult = gameController.CheckIsHit(this.enemyFleet, position);
@@ -225,7 +225,7 @@ class Battleship {
         this.enemyFleet[1].addPosition(new position(letters.E, 2));
     }
 
-    CheckFleetSunkenShips(fleet) {
+    static CheckFleetSunkenShips(fleet) {
         let sunkShips = [];
         fleet.forEach(ship => {
             if (ship.isSunk()) {
@@ -233,7 +233,7 @@ class Battleship {
             }
         });
         if (sunkShips.length > 0) {
-            console.log(cliColor.redBright(`Sunk ships: ${sunkShips.join(', ')}.`));
+            console.log(cliColor.redBright(`Ships sunk: ${sunkShips.join(', ')}.`));
         }
         return sunkShips;
     }
