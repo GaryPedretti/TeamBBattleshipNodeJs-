@@ -4,10 +4,16 @@ class Ship {
         this.size = size;
         this.color = color;
         this.positions = [];
+        this.hitPositions = [] ;
+
     }
 
     addPosition(position) {
         this.positions.push(position);
+    }
+
+    addHit(position) {
+        this.hitPositions.push(position);
     }
 }
 
