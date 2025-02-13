@@ -47,7 +47,9 @@ class Battleship {
         console.log("   \\    \\_/");
         console.log("    \"\"\"\"");
 
+        var finishGame = false;
         do {
+
             console.log();
             console.log(cliColor.green("Player, it's your turn"));
             console.log(cliColor.green("Enter coordinates for your shot :"));
@@ -76,7 +78,24 @@ class Battleship {
 
             
             console.log(isHit ? cliColor.red("Yeah ! Nice hit !") : cliColor.blue( "Miss"));
+            
+            ///Display Computers Sunk and Left
+            var enemySunkShips = gameController.getSunkShipNames(this.enemyFleet);
+            var enemyLeftShips = gameController.getLeftShipNames(this.enemyFleet);
+            
+            if(enemyLeftShips == ""  )
+            {
+                finishGame = true;
+                console.log(cliColor.green("YOU ARE THE WINNER!"));
+            }
+            else{
+                console.log(cliColor.red("Enemy's ships Sunk: " + (enemySunkShips == "" ? " none" : enemySunkShips ) ));
+                console.log(cliColor.blue("Enemy's ships Left: "+ (enemyLeftShips == "" ? " none" : enemyLeftShips ) ));
+            }
+           
 
+            
+            //Computer's Turn 
             var computerPos = this.GetRandomPosition();
             var isHit = gameController.CheckIsHit(this.myFleet, computerPos);
 
@@ -105,8 +124,23 @@ class Battleship {
                 console.log(cliColor.blue(tabchars + "`-'  `-'  `-'  `-'  `-'  `-'  `-'  `-'  `"));
 
          }
+         
+         var playerSunkShips = gameController.getSunkShipNames(this.myFleet);
+         var playerLeftShips = gameController.getLeftShipNames(this.myFleet);
+
+         if(playerLeftShips == ""  )
+            {
+                finishGame = true;
+                console.log(cliColor.red("YOU LOST!"));
+            }
+            else{
+
+                //Display my Sunk and Left Ships
+                console.log(cliColor.red("Player's ships Sunk: " + (playerSunkShips == "" ? " none" : playerSunkShips ) ));
+                console.log(cliColor.blue("Player's ships Left: "+ (playerLeftShips == "" ? " none" : playerLeftShips ) ));
+            }
         }
-        while (true);
+        while (!finishGame);
     }
 
     static ParsePosition(input) {

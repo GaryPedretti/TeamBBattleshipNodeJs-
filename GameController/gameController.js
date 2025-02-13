@@ -17,8 +17,20 @@ class GameController {
         var shipNames = "";
         for (let index = 0; index < ships.length; index++) {
             const element = ships[index];
-            if(element.size == element.hitPositions.length){
-                shipNames = shipNames + element.name ;
+            if(element.hitPositions.length == element.size){
+                shipNames = shipNames + element.name + ", ";
+            }
+          }
+          return shipNames;
+    }
+
+    static getLeftShipNames(ships)
+    {
+        var shipNames = "";
+        for (let index = 0; index < ships.length; index++) {
+            const element = ships[index];
+            if( element.hitPositions.length < element.size ){
+                shipNames = shipNames + element.name + ", ";
             }
           }
           return shipNames;
@@ -34,11 +46,20 @@ class GameController {
         ships.forEach(function (ship) {
             ship.positions.forEach(position => {
                 if (position.row == shot.row && position.column == shot.column)
+                {
+                    ship.addHit(position);
                     returnvalue = true;
+                }
+                    
             });
         });
         return returnvalue;
     }
+
+    
+
+
+    
 
     static isShipValid(ship) {
         return ship.positions.length == ship.size;
